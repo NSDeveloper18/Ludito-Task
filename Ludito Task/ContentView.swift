@@ -7,6 +7,7 @@
 
 import SwiftUI
 import CoreData
+import YandexMapsMobile
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext

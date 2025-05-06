@@ -6,8 +6,15 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		4F69B262140AA88EB42EF168 /* Pods_Ludito_Task.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B36A5B3248C1A603E6EBAECE /* Pods_Ludito_Task.framework */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
+		14CD69BE2CB484D84BE1B8B1 /* Pods-Ludito Task.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ludito Task.release.xcconfig"; path = "Target Support Files/Pods-Ludito Task/Pods-Ludito Task.release.xcconfig"; sourceTree = "<group>"; };
 		2ED830382DCA8625004CC5AD /* Ludito Task.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Ludito Task.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AC3929A6A31827A49462DF00 /* Pods-Ludito Task.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ludito Task.debug.xcconfig"; path = "Target Support Files/Pods-Ludito Task/Pods-Ludito Task.debug.xcconfig"; sourceTree = "<group>"; };
+		B36A5B3248C1A603E6EBAECE /* Pods_Ludito_Task.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Ludito_Task.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -23,6 +30,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4F69B262140AA88EB42EF168 /* Pods_Ludito_Task.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -34,6 +42,8 @@
 			children = (
 				2ED8303A2DCA8625004CC5AD /* Ludito Task */,
 				2ED830392DCA8625004CC5AD /* Products */,
+				4A2646B7C2F70DAD815631AA /* Pods */,
+				52A81AA826E61AEBA709F3B8 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -45,6 +55,23 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		4A2646B7C2F70DAD815631AA /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				AC3929A6A31827A49462DF00 /* Pods-Ludito Task.debug.xcconfig */,
+				14CD69BE2CB484D84BE1B8B1 /* Pods-Ludito Task.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		52A81AA826E61AEBA709F3B8 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B36A5B3248C1A603E6EBAECE /* Pods_Ludito_Task.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -52,9 +79,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2ED8304B2DCA8627004CC5AD /* Build configuration list for PBXNativeTarget "Ludito Task" */;
 			buildPhases = (
+				012D9D99673565EC3400B3C6 /* [CP] Check Pods Manifest.lock */,
 				2ED830342DCA8625004CC5AD /* Sources */,
 				2ED830352DCA8625004CC5AD /* Frameworks */,
 				2ED830362DCA8625004CC5AD /* Resources */,
+				DCDC55F324AA45DD67BF55D1 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -64,8 +93,6 @@
 				2ED8303A2DCA8625004CC5AD /* Ludito Task */,
 			);
 			name = "Ludito Task";
-			packageProductDependencies = (
-			);
 			productName = "Ludito Task";
 			productReference = 2ED830382DCA8625004CC5AD /* Ludito Task.app */;
 			productType = "com.apple.product-type.application";
@@ -113,6 +140,48 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		012D9D99673565EC3400B3C6 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Ludito Task-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		DCDC55F324AA45DD67BF55D1 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Ludito Task/Pods-Ludito Task-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Ludito Task/Pods-Ludito Task-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Ludito Task/Pods-Ludito Task-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		2ED830342DCA8625004CC5AD /* Sources */ = {
@@ -246,6 +315,7 @@
 		};
 		2ED8304C2DCA8627004CC5AD /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = AC3929A6A31827A49462DF00 /* Pods-Ludito Task.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -254,6 +324,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Ludito Task/Preview Content\"";
 				DEVELOPMENT_TEAM = 8H329PU3TS;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Ludito Task";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
@@ -282,6 +353,7 @@
 		};
 		2ED8304D2DCA8627004CC5AD /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 14CD69BE2CB484D84BE1B8B1 /* Pods-Ludito Task.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -290,6 +362,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Ludito Task/Preview Content\"";
 				DEVELOPMENT_TEAM = 8H329PU3TS;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Ludito Task";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
