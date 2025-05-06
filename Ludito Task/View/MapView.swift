@@ -10,11 +10,32 @@ import SwiftUI
 struct MapView: View {
     @ObservedObject var mapModel: MapModel = .shared
     @State var mapAction: HomeYandexMapViewAction?
+    @State var openSearchSheet = false
     @State var chooseCity = false
     var body: some View {
-        VStack {
+        ZStack {
             YandexMapView(action: $mapAction, choosedLocation: $chooseCity)
+            VStack {
+                Button(action: {
+                    openSearchSheet.toggle()
+                }, label: {
+                    HStack {
+                        Text("Поиск...")
+                            .padding()
+                        Spacer()
+                    }
+                    .background(Color(.systemGray6))
+                    .cornerRadius(20)
+                    .padding(16)
+                })
+                
+                Spacer()
+            }
+            
         }
+        .sheet(isPresented: $openSearchSheet, content: {
+            SearchSheetView()
+        })
         .onAppear() {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 DispatchQueue.main.async {
