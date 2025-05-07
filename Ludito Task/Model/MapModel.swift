@@ -16,24 +16,14 @@ class MapModel: ObservableObject {
     
     @Published var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 41.2646, longitude: 69.2163), span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005))
     
-    @Published var page = 1
-    @Published var FilterLoading = false
-    @Published var isMapLoaded = false
     
-    
-    @Published var openMapListSheet = false
     @Published var latitudeMap = 41.309312377631656
     @Published var longitudeMap = 69.24050945460057
     
     @Published var addressMap = ""
-    @Published var latitudeMapSOS = 41.309312377631656
-    @Published var longitudeMapSOS = 69.24050945460057
     
-    @Published var latitudeCourierSOS = 41.309312377631656
-    @Published var longitudeCourierSOS = 69.24050945460057
-    
-    @AppStorage("latitude") var latitude = 41.309312377631656
-    @AppStorage("longitude") var longitude = 69.24050945460057
+    @Published var latitude = 41.309312377631656
+    @Published var longitude = 69.24050945460057
     
 }
 
@@ -81,8 +71,8 @@ private func searchLocation(lat: Double, lon: Double, completion: @escaping (Str
     @ObservedObject var mapModel: MapModel = .shared
     let urlString = "https://geocode-maps.yandex.ru/1.x/?apikey=\(apiKey)&geocode=\(longitude),\(latitude)&format=json&lang=ru"
     
-    mapModel.latitudeMapSOS = latitude
-    mapModel.longitudeMapSOS = longitude
+    mapModel.latitude = latitude
+    mapModel.longitude = longitude
     
     guard let url = URL(string: urlString) else {
         DebugPrint("Invalid URL")

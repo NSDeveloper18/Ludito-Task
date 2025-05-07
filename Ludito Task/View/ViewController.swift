@@ -8,8 +8,10 @@
 import SwiftUI
 
 struct ViewController: View {
+    @State var view: AppView = .mapView
     var body: some View {
-        MapView()
+        MapView(view: $view)
+            .preferredColorScheme(.light)
     }
 }
 

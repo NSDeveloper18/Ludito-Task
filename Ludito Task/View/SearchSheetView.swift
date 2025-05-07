@@ -13,12 +13,12 @@ struct SearchSheetView: View {
     var body: some View {
         NavigationView {
             VStack {
-                TextField("Enter organization or address...", text: $viewModel.searchText)
+                TextField("Поиск...", text: $viewModel.searchText)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding()
 
                 if viewModel.isLoading {
-                    ProgressView("Searching...")
+                    ProgressView("Поиск...")
                         .padding()
                 }
 
@@ -41,7 +41,8 @@ struct SearchSheetView: View {
                     .padding(.vertical, 5)
                 }
             }
-            .navigationTitle("Yandex Search")
+            .navigationTitle("Yandex поиск")
         }
+        
     }
 }
