@@ -10,24 +10,14 @@ import SwiftUI
 import MapKit
 import CoreLocation
 
-@MainActor
 class MapModel: ObservableObject {
     static let shared = MapModel()
-    
-    @Published var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 41.2646, longitude: 69.2163), span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005))
-    
-    
-    @Published var latitudeMap = 41.309312377631656
-    @Published var longitudeMap = 69.24050945460057
-    
     @Published var addressMap = ""
     
     @Published var latitude = 41.309312377631656
     @Published var longitude = 69.24050945460057
     
 }
-
-
 
 private var  localTimer: Timer?
 func checkLocation(current: YandexMapLocation) {
@@ -67,7 +57,7 @@ private func searchLocation(lat: Double, lon: Double, completion: @escaping (Str
     }
 }
 
-@MainActor private func getAddressFromYandex(latitude: Double, longitude: Double, apiKey: String = "4ddc9ec9-3392-4af7-8fe3-1aae599dbb36", completion: @escaping (String?) -> Void)  {
+private func getAddressFromYandex(latitude: Double, longitude: Double, apiKey: String = "4ddc9ec9-3392-4af7-8fe3-1aae599dbb36", completion: @escaping (String?) -> Void)  {
     @ObservedObject var mapModel: MapModel = .shared
     let urlString = "https://geocode-maps.yandex.ru/1.x/?apikey=\(apiKey)&geocode=\(longitude),\(latitude)&format=json&lang=ru"
     

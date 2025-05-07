@@ -25,18 +25,20 @@ struct YandexMapView: UIViewRepresentable {
     @Binding var action: HomeYandexMapViewAction?
     @Binding var choosedLocation: Bool
     @ObservedObject var mapModel: MapModel = .shared
-    
+
     func makeUIView(context: Context) -> YMKMapView {
         guard let mapView = YMKMapView(frame: .zero, vulkanPreferred: isM1Simulator()) else {
             return UIView() as! YMKMapView
         }
 
         let coordinator = context.coordinator
+        coordinator.mapView = mapView
 
         mapView.mapWindow.map.isRotateGesturesEnabled = false
         mapView.mapWindow.map.addCameraListener(with: coordinator)
         mapView.mapWindow.map.addInputListener(with: coordinator)
-        
+
+        // Initial camera position
         mapView.mapWindow.map.move(
             with: YMKCameraPosition(
                 target: YMKPoint(latitude: mapModel.latitude, longitude: mapModel.longitude),
@@ -46,13 +48,19 @@ struct YandexMapView: UIViewRepresentable {
             cameraCallback: nil
         )
 
-        coordinator.mapView = mapView
         makeUserLocationLayer(mapView: mapView, context: context)
 
+        // Add center pin icon
         let imageView = UIImageView(image: UIImage(named: "setLocationPinIcon"))
-        mapView.addSubview(imageView)
         imageView.tag = 111222111
-        imageView.center = mapView.center
+        imageView.contentMode = .scaleAspectFit
+        mapView.addSubview(imageView)
+
+        // Position it properly after layout
+        DispatchQueue.main.async {
+            imageView.center = CGPoint(x: mapView.frame.size.width / 2,
+                                       y: mapView.frame.size.height / 2 - imageView.frame.height / 3.0)
+        }
 
         return mapView
     }
@@ -68,6 +76,7 @@ struct YandexMapView: UIViewRepresentable {
         let currentPosition = uiView.mapWindow.map.cameraPosition
         guard let centerView = uiView.viewWithTag(111222111) else { return }
 
+        // Update pin visibility based on chosen location
         if choosedLocation {
             if context.coordinator.sosPin == nil {
                 centerView.isHidden = true
@@ -95,8 +104,13 @@ struct YandexMapView: UIViewRepresentable {
             }
         }
 
-        var centerPin = CGPoint(x: uiView.center.x, y: uiView.center.y - (centerView.frame.height / 3.0))
+        // Keep the center pin in the middle of screen
+        let screenCenter = CGPoint(x: uiView.frame.size.width / 2,
+                                   y: uiView.frame.size.height / 2 - centerView.frame.height / 3.0)
+        centerView.center = screenCenter
+        centerView.bringSubviewToFront(uiView)
 
+        // Handle actions
         switch action {
         case let .zoomChange(isOut):
             let zoomLevel = currentPosition.zoom + (isOut ? 1 : -1)
@@ -111,22 +125,11 @@ struct YandexMapView: UIViewRepresentable {
         case let .cameraPostionChanged(center):
             let newPosition = YMKCameraPosition(target: center.toYMKPoint(), zoom: currentPosition.zoom, azimuth: currentPosition.azimuth, tilt: currentPosition.tilt)
             uiView.mapWindow.map.move(with: newPosition, animation: YMKAnimation(type: .smooth, duration: 0.3))
-            centerPin = centerView.center
-
-        case let .courierLocationChanged(lat, lon):
-            context.coordinator.sosPin?.geometry = YMKPoint(latitude: lat, longitude: lon)
-
-            if let pinPoint = context.coordinator.sosPin?.geometry {
-                let newPosition = YMKCameraPosition(target: pinPoint, zoom: currentPosition.zoom, azimuth: currentPosition.azimuth, tilt: currentPosition.tilt)
-                uiView.mapWindow.map.move(with: newPosition, animation: YMKAnimation(type: .smooth, duration: 0.3))
-            }
 
         default: break
         }
 
         action = nil
-        centerView.center = centerPin
-        centerView.bringSubviewToFront(uiView)
     }
 
     func makeCoordinator() -> Coordinator {
@@ -134,10 +137,8 @@ struct YandexMapView: UIViewRepresentable {
     }
 
     class Coordinator: NSObject, YMKUserLocationObjectListener, YMKMapCameraListener, YMKMapInputListener {
-        func onMapLongTap(with map: YMKMap, point: YMKPoint) {
-            
-        }
-        
+        func onMapLongTap(with map: YMKMap, point: YMKPoint) {}
+
         var selectedLocationPin: YMKPlacemarkMapObject?
         var sosPin: YMKPlacemarkMapObject?
         var parent: YandexMapView
@@ -165,10 +166,16 @@ struct YandexMapView: UIViewRepresentable {
 
         func onCameraPositionChanged(with map: YMKMap, cameraPosition: YMKCameraPosition, cameraUpdateReason: YMKCameraUpdateReason, finished: Bool) {
             if cameraUpdateReason == .application { return }
+
+            if finished {
+                let currentCameraPosition = YandexMapLocation.fromYMKPoint(cameraPosition.target)
+                parent.action = .cameraPostionChanged(center: currentCameraPosition)
+            }
         }
     }
 }
 
+// Location model + extensions
 public struct YandexMapLocation {
     public let latitude: Double
     public let longitude: Double

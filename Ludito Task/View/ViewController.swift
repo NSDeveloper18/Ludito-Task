@@ -10,8 +10,17 @@ import SwiftUI
 struct ViewController: View {
     @State var view: AppView = .mapView
     var body: some View {
-        MapView(view: $view)
-            .preferredColorScheme(.light)
+        VStack {
+            switch view {
+            case .mapView:
+                MapView(view: $view)
+            case .bookmark:
+                SavedAddressesView(view: $view)
+            case .profile:
+                MapView(view: $view)
+            }
+        }
+        .preferredColorScheme(.light)
     }
 }
 
