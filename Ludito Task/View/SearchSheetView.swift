@@ -51,9 +51,7 @@ struct SearchSheetView: View {
                     .stroke(colors.white2, lineWidth: 1)
             )
             .padding(16)
-            
-            
-            
+                        
             if viewModel.isLoading {
                 ProgressView("Поиск...")
                     .padding()
@@ -64,31 +62,41 @@ struct SearchSheetView: View {
                     .foregroundColor(.red)
                     .padding()
             }
-            
-            ForEach(viewModel.features) { feature in
-                HStack(spacing: 12) {
-                    Image("location")
-                        .resizable()
-                        .renderingMode(.template)
-                        .foregroundColor(colors.gray6)
-                        .scaledToFit()
-                        .frame(width: 32, height: 32)
-                    
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(feature.properties.companyMetaData.name)
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundStyle(.black)
+            VStack(spacing: 0) {
+                Rectangle()
+                    .frame(width: .infinity, height: 2)
+                    .foregroundStyle(colors.white2)
+                
+                ForEach(viewModel.features) { feature in
+                    HStack(spacing: 12) {
+                        Image("location")
+                            .resizable()
+                            .renderingMode(.template)
+                            .foregroundColor(colors.gray6)
+                            .scaledToFit()
+                            .frame(width: 32, height: 32)
                         
-                        Text(feature.properties.companyMetaData.address)
-                            .font(.system(size: 14, weight: .semibold))
-                            .foregroundStyle(colors.gray)
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(feature.properties.companyMetaData.name)
+                                .font(.system(size: 16, weight: .semibold))
+                                .foregroundStyle(.black)
+                            
+                            Text(feature.properties.companyMetaData.address)
+                                .font(.system(size: 14, weight: .semibold))
+                                .foregroundStyle(colors.gray)
+                        }
+                        .padding(.vertical, 5)
+                        
+                        Spacer()
                     }
-                    .padding(.vertical, 5)
+                    .frame(height: 42)
+                    .padding(.vertical, 16)
                     
-                    Spacer()
+                    Rectangle()
+                        .frame(width: .infinity, height: 2)
+                        .foregroundStyle(colors.white2)
                 }
             }
-            
             Spacer()
         }
         .background(colors.white2)

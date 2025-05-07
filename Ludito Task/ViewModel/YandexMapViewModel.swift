@@ -23,7 +23,6 @@ enum HomeYandexMapViewAction: Equatable {
 
 struct YandexMapView: UIViewRepresentable {
     @Binding var action: HomeYandexMapViewAction?
-    @State var choosedLocation = false
     @ObservedObject var mapModel: MapModel = .shared
 
     func makeUIView(context: Context) -> YMKMapView {
@@ -128,7 +127,6 @@ struct YandexMapView: UIViewRepresentable {
         var sosPin: YMKPlacemarkMapObject?
         var parent: YandexMapView
         var mapView: YMKMapView?
-        @ObservedObject var mapModel: MapModel = .shared
 
         init(_ parent: YandexMapView) {
             self.parent = parent

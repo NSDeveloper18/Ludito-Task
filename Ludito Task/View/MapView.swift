@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MapView: View {
     @ObservedObject var mapModel: MapModel = .shared
-    @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.managedObjectContext) var viewContext
     @Binding var view: AppView
     @State var mapAction: HomeYandexMapViewAction?
     @State var openSearchSheet = false
@@ -61,10 +61,7 @@ struct MapView: View {
                     Spacer()
                     
                     Button(action: {
-                        DispatchQueue.main.async {
-                            mapAction = .showCurrentLocation
-                            checkLocation(current: YandexMapLocation(latitude: mapModel.latitude, longitude: mapModel.longitude))
-                        }
+                        centerToUserLocation()
                     }, label: {
                         ZStack {
                             Circle()
@@ -105,37 +102,9 @@ struct MapView: View {
         .onChange(of: mapAction) { action in
             switch action {
             case let .cameraPostionChanged(center):
-                if !openAddressSheet {
-                    DispatchQueue.main.async {
-                        checkLocation(current: center)
-                    }
-                }
-                
-                if mapModel.addressMap != "" {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                        openAddressSheet = true
-                    }
-                }
+                onCameraChanged(center)
             default:
                 break
-            }
-        }
-    }
-    
-    func addItem() {
-        withAnimation {
-            let newItem = Item(context: viewContext)
-            newItem.timestamp = Date()
-            newItem.name = "Location Name"
-            newItem.address = mapModel.addressMap
-            newItem.latitude = mapModel.latitude
-            newItem.longitude = mapModel.longitude
-
-            do {
-                try viewContext.save()
-            } catch {
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
             }
         }
     }
