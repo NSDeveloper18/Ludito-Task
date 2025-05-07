@@ -9,15 +9,17 @@ import SwiftUI
 
 struct MapView: View {
     @ObservedObject var mapModel: MapModel = .shared
+    @Environment(\.managedObjectContext) private var viewContext
     @Binding var view: AppView
     @State var mapAction: HomeYandexMapViewAction?
     @State var openSearchSheet = false
     @State var openAddressSheet = false
-    @State var chooseCity = false
+    @State var alertShow = false
     var body: some View {
         ZStack {
-            YandexMapView(action: $mapAction, choosedLocation: $chooseCity)
+            YandexMapView(action: $mapAction)
                 .edgesIgnoringSafeArea(.all)
+            
             VStack {
                 if !openSearchSheet {
                     Button(action: {
@@ -38,7 +40,7 @@ struct MapView: View {
                             
                             Spacer()
                         }
-                        .background(Color(hex: "#E0E0E0"))
+                        .background(colors.gray4)
                         .frame(height: 48)
                         .cornerRadius(10)
                         .padding(8)
@@ -47,7 +49,7 @@ struct MapView: View {
                         .cornerRadius(16)
                         .overlay(
                             RoundedRectangle(cornerRadius: 16)
-                                .stroke(Color(hex: "#F1F1F1"), lineWidth: 1)
+                                .stroke(colors.white2, lineWidth: 1)
                         )
                         .padding(16)
                     })
@@ -91,9 +93,15 @@ struct MapView: View {
                 .modifier(BottomViewModifier())
         })
         .sheet(isPresented: $openAddressSheet, content: {
-            AddressSheet(closeSheet: $openAddressSheet)
+            AddressSheet(closeSheet: $openAddressSheet, openAlert: $alertShow)
                 .modifier(BottomViewModifier())
         })
+        .alert("Добавить адрес в избранное", isPresented: $alertShow) {
+            TextField("", text: $mapModel.addressMap)
+            Button("Подтвердить", action: { addItem() })
+            Button("Отмена",role: .cancel, action: {})
+        }
+        
         .onChange(of: mapAction) { action in
             switch action {
             case let .cameraPostionChanged(center):
@@ -102,6 +110,7 @@ struct MapView: View {
                         checkLocation(current: center)
                     }
                 }
+                
                 if mapModel.addressMap != "" {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                         openAddressSheet = true
@@ -109,6 +118,24 @@ struct MapView: View {
                 }
             default:
                 break
+            }
+        }
+    }
+    
+    func addItem() {
+        withAnimation {
+            let newItem = Item(context: viewContext)
+            newItem.timestamp = Date()
+            newItem.name = "Location Name"
+            newItem.address = mapModel.addressMap
+            newItem.latitude = mapModel.latitude
+            newItem.longitude = mapModel.longitude
+
+            do {
+                try viewContext.save()
+            } catch {
+                let nsError = error as NSError
+                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
             }
         }
     }

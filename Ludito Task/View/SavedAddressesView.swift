@@ -44,7 +44,7 @@ struct SavedAddressesView: View {
                                         Spacer()
                                     }
                                     Text(item.address ?? "No address")
-                                        .foregroundStyle(Color(hex: "#B0ABAB"))
+                                        .foregroundStyle(colors.gray)
                                         .font(.system(size: 14, weight: .semibold))
                                         .frame(height: 20)
                                 }
@@ -65,7 +65,7 @@ struct SavedAddressesView: View {
                             .cornerRadius(12)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 12)
-                                    .stroke(Color(hex: "#F1F1F1"), lineWidth: 1)
+                                    .stroke(colors.white2, lineWidth: 1)
                             )
                             .padding(.top, 12)
                         }
@@ -74,12 +74,10 @@ struct SavedAddressesView: View {
                     Spacer()
                 }
                 .padding(.horizontal, 16)
-                .background(Color(hex: "#F9F9F9"))
+                .background(colors.white3)
                
-                
                 BottomBar(view: $view)
             }
-           
             .edgesIgnoringSafeArea(.all)
         }
     

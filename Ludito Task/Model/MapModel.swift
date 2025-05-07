@@ -20,6 +20,7 @@ class MapModel: ObservableObject {
 }
 
 private var  localTimer: Timer?
+
 func checkLocation(current: YandexMapLocation) {
     @ObservedObject var mapModel: MapModel = .shared
     localTimer?.invalidate()
@@ -109,7 +110,7 @@ private func getAddressFromYandex(latitude: Double, longitude: Double, apiKey: S
     task.resume()
 }
 
-func cleanAddress(_ fullAddress: String) -> String {
+private func cleanAddress(_ fullAddress: String) -> String {
     // Define the substrings you want to remove
     let substringsToRemove = ["Uzbekistan", "Tashkent", "Узбекистан", "Ташкент", "Oʻzbekiston", "Toshkent", ","]
     

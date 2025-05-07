@@ -23,7 +23,7 @@ enum HomeYandexMapViewAction: Equatable {
 
 struct YandexMapView: UIViewRepresentable {
     @Binding var action: HomeYandexMapViewAction?
-    @Binding var choosedLocation: Bool
+    @State var choosedLocation = false
     @ObservedObject var mapModel: MapModel = .shared
 
     func makeUIView(context: Context) -> YMKMapView {
@@ -71,38 +71,22 @@ struct YandexMapView: UIViewRepresentable {
         userLocationLayer.isHeadingEnabled = false
         userLocationLayer.setObjectListenerWith(context.coordinator)
     }
-
+    
     func updateUIView(_ uiView: YMKMapView, context: Context) {
         let currentPosition = uiView.mapWindow.map.cameraPosition
         guard let centerView = uiView.viewWithTag(111222111) else { return }
-
-        // Update pin visibility based on chosen location
-        if choosedLocation {
-            if context.coordinator.sosPin == nil {
-                centerView.isHidden = true
-
-                let pin = uiView.mapWindow.map.mapObjects.addPlacemark()
-                if let image = UIImage(named: "setLocationPinIcon") {
-                    pin.setIconWith(image)
-                }
-                pin.geometry = currentPosition.target
-                context.coordinator.selectedLocationPin = pin
-
-                let sosPin = uiView.mapWindow.map.mapObjects.addPlacemark()
-                context.coordinator.sosPin = sosPin
-            }
-        } else {
-            if let sosPin = context.coordinator.sosPin {
-                centerView.isHidden = false
-                uiView.mapWindow.map.mapObjects.remove(with: sosPin)
-                context.coordinator.sosPin = nil
-
-                if let pin = context.coordinator.selectedLocationPin {
-                    uiView.mapWindow.map.mapObjects.remove(with: pin)
-                    context.coordinator.selectedLocationPin = nil
-                }
+        
+        if let sosPin = context.coordinator.sosPin {
+            centerView.isHidden = false
+            uiView.mapWindow.map.mapObjects.remove(with: sosPin)
+            context.coordinator.sosPin = nil
+            
+            if let pin = context.coordinator.selectedLocationPin {
+                uiView.mapWindow.map.mapObjects.remove(with: pin)
+                context.coordinator.selectedLocationPin = nil
             }
         }
+        
 
         // Keep the center pin in the middle of screen
         let screenCenter = CGPoint(x: uiView.frame.size.width / 2,
@@ -128,8 +112,9 @@ struct YandexMapView: UIViewRepresentable {
 
         default: break
         }
-
-        action = nil
+        DispatchQueue.main.async {
+            action = nil
+        }
     }
 
     func makeCoordinator() -> Coordinator {
