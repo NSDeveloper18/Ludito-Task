@@ -7,15 +7,15 @@
 
 import Foundation
 import Combine
+import CoreLocation
 
 class YandexSearchViewModel: ObservableObject {
     @Published var searchText: String = ""
-    @Published var features: [Feature] = []
+    @Published var suggestions: [Suggestion] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
 
     private var cancellables = Set<AnyCancellable>()
-    private let apiKey = "88f8d157-de64-47e4-b415-9061de20233d"
 
     init() {
         $searchText
@@ -23,28 +23,26 @@ class YandexSearchViewModel: ObservableObject {
             .removeDuplicates()
             .sink { [weak self] text in
                 guard let self = self else { return }
-                if text.count > 3 {
-                    self.fetchOrganizations(query: text)
+                if text.count > 2 {
+                    self.fetchSuggestions(query: text)
                 } else {
-                    self.features = [] // Clear results when input is short
+                    self.suggestions = []
                 }
             }
             .store(in: &cancellables)
     }
 
-    func fetchOrganizations(query: String) {
+    func fetchSuggestions(query: String) {
         isLoading = true
         errorMessage = nil
 
-        var components = URLComponents(string: "https://search-maps.yandex.ru/v1/")!
+        var components = URLComponents(string: "https://suggest-maps.yandex.uz/suggest-geo")!
         components.queryItems = [
-            URLQueryItem(name: "text", value: query),
-            URLQueryItem(name: "type", value: "biz"),
-            URLQueryItem(name: "lang", value: "ru_RU"),
-            URLQueryItem(name: "apikey", value: apiKey),
-            URLQueryItem(name: "ll", value: "69.24050945460057,41.309312377631656"),
-            URLQueryItem(name: "spn", value: "0.552069,0.400552"),
-            URLQueryItem(name: "results", value: "5")
+            URLQueryItem(name: "outformat", value: "json"),
+            URLQueryItem(name: "v", value: "9"),
+            URLQueryItem(name: "add_coords", value: "1"),
+            URLQueryItem(name: "ll", value: "69.279746,41.310987"),
+            URLQueryItem(name: "part", value: query)
         ]
 
         guard let url = components.url else {
@@ -68,8 +66,8 @@ class YandexSearchViewModel: ObservableObject {
                 }
 
                 do {
-                    let decoded = try JSONDecoder().decode(FeatureCollection.self, from: data)
-                    self.features = decoded.features
+                    let decoded = try JSONDecoder().decode(SuggestionResponse.self, from: data)
+                    self.suggestions = decoded.results
                 } catch {
                     self.errorMessage = "Decoding error: \(error.localizedDescription)"
                 }
@@ -77,3 +75,5 @@ class YandexSearchViewModel: ObservableObject {
         }.resume()
     }
 }
+
+

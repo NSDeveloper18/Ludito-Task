@@ -50,8 +50,9 @@ struct SearchSheetView: View {
                 RoundedRectangle(cornerRadius: 16)
                     .stroke(colors.white2, lineWidth: 1)
             )
-            .padding(16)
-                        
+            .padding(.horizontal, 16)
+            .padding(.top, 16)
+            
             if viewModel.isLoading {
                 ProgressView("Поиск...")
                     .padding()
@@ -62,44 +63,53 @@ struct SearchSheetView: View {
                     .foregroundColor(.red)
                     .padding()
             }
+            
             VStack(spacing: 0) {
-                Rectangle()
-                    .frame(width: .infinity, height: 2)
-                    .foregroundStyle(colors.white2)
-                
-                ForEach(viewModel.features) { feature in
-                    HStack(spacing: 12) {
-                        Image("location")
-                            .resizable()
-                            .renderingMode(.template)
-                            .foregroundColor(colors.gray6)
-                            .scaledToFit()
-                            .frame(width: 32, height: 32)
-                        
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(feature.properties.companyMetaData.name)
-                                .font(.system(size: 16, weight: .semibold))
-                                .foregroundStyle(.black)
-                            
-                            Text(feature.properties.companyMetaData.address)
-                                .font(.system(size: 14, weight: .semibold))
-                                .foregroundStyle(colors.gray)
-                        }
-                        .padding(.vertical, 5)
-                        
-                        Spacer()
-                    }
-                    .frame(height: 42)
-                    .padding(.vertical, 16)
+                ScrollView(.vertical, showsIndicators: false) {
                     
                     Rectangle()
-                        .frame(width: .infinity, height: 2)
+                        .frame(width: UIScreen.main.bounds.size.width,height: 2)
                         .foregroundStyle(colors.white2)
+                    
+                    ForEach(viewModel.suggestions) { suggestion in
+                        HStack(spacing: 12) {
+                            Image("pin")
+                                .resizable()
+                                .renderingMode(.template)
+                                .foregroundColor(colors.gray6)
+                                .scaledToFit()
+                                .frame(width: 32, height: 32)
+                            
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(suggestion.title.text)
+                                    .font(.system(size: 16, weight: .semibold))
+                                    .foregroundStyle(.black)
+                                
+                                if let subtitle = suggestion.subtitle?.text {
+                                    Text(subtitle)
+                                        .font(.system(size: 14, weight: .semibold))
+                                        .foregroundStyle(colors.gray)
+                                }
+                            }
+                            .padding(.vertical, 5)
+                            
+                            Spacer()
+                        }
+                        .frame(height: 42)
+                        .padding(.horizontal, 16)
+                        
+                        Rectangle()
+                            .frame(width: UIScreen.main.bounds.size.width,height: 2)
+                            .foregroundStyle(colors.white2)
+                    }
                 }
             }
+            .scrollDismissesKeyboard(.interactively)
+            
             Spacer()
         }
-        .background(colors.white2)
+        .edgesIgnoringSafeArea(.bottom)
+        .background(.white)
         .onTapGesture {
             hideKeyboard()
         }

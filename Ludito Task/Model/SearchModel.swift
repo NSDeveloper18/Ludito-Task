@@ -5,41 +5,41 @@
 //  Created by Shakhzod Botirov on 07/05/25.
 //
 
-import Foundation
+import SwiftUI
 import CoreLocation
 
-struct FeatureCollection: Decodable {
-    let features: [Feature]
+struct SuggestionResponse: Decodable {
+    let results: [Suggestion]
 }
 
-struct Feature: Decodable, Identifiable {
+struct Suggestion: Decodable, Identifiable {
     var id: String {
-        properties.companyMetaData.id
+        uri ?? text
     }
-    let geometry: Geometry
-    let properties: Properties
-}
 
-struct Geometry: Decodable {
-    let coordinates: [Double] // [longitude, latitude]
+    let text: String
+    let title: Title
+    let subtitle: Subtitle?
+    let pos: String?
+    let uri: String?
+    
+    var coordinate: CLLocationCoordinate2D? {
+        guard let pos = pos else { return nil }
+        let components = pos.split(separator: ",")
+        if components.count == 2,
+           let lon = Double(components[0]),
+           let lat = Double(components[1]) {
+            return CLLocationCoordinate2D(latitude: lat, longitude: lon)
+        }
+        return nil
+    }
 
-    var location: CLLocationCoordinate2D {
-        CLLocationCoordinate2D(latitude: coordinates[1], longitude: coordinates[0])
+    struct Title: Decodable {
+        let text: String
+    }
+
+    struct Subtitle: Decodable {
+        let text: String
     }
 }
 
-struct Properties: Decodable {
-    let name: String
-    let companyMetaData: CompanyMetaData
-
-    enum CodingKeys: String, CodingKey {
-        case name
-        case companyMetaData = "CompanyMetaData"
-    }
-}
-
-struct CompanyMetaData: Decodable {
-    let id: String
-    let name: String
-    let address: String
-}

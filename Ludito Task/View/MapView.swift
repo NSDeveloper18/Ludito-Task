@@ -87,7 +87,7 @@ struct MapView: View {
         }
         .sheet(isPresented: $openSearchSheet, content: {
             SearchSheetView()
-                .modifier(BottomViewModifier())
+                .presentationDetents([.medium, .large])
         })
         .sheet(isPresented: $openAddressSheet, content: {
             AddressSheet(closeSheet: $openAddressSheet, openAlert: $alertShow)
